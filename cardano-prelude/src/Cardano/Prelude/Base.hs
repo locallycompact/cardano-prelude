@@ -28,6 +28,7 @@ import qualified Data.Text as T
 
 import Control.Category (id)
 import Control.Category as X hiding (id)
+import Data.Kind (Type)
 import Numeric.Natural as X
 
 -- | Rename `id` to `identity` to allow `id` as a variable name
@@ -40,7 +41,7 @@ putTextLn :: Text -> IO ()
 putTextLn = putStrLn
 
 -- Length which includes @Text@ as well as @Foldable@.
-type HasLength :: * -> Constraint
+type HasLength :: Type -> Constraint
 class HasLength a where
     length' :: a -> Int
 
