@@ -1,9 +1,10 @@
-{-# LANGUAGE BangPatterns        #-}
-{-# LANGUAGE MagicHash           #-}
-{-# LANGUAGE OverloadedStrings   #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE UnboxedTuples       #-}
-{-# LANGUAGE UnliftedFFITypes    #-}
+{-# LANGUAGE BangPatterns             #-}
+{-# LANGUAGE MagicHash                #-}
+{-# LANGUAGE OverloadedStrings        #-}
+{-# LANGUAGE ScopedTypeVariables      #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
+{-# LANGUAGE UnboxedTuples            #-}
+{-# LANGUAGE UnliftedFFITypes         #-}
 
 module Cardano.Prelude.GHC.Heap.Size (
     CountFailure(..)
@@ -73,6 +74,7 @@ foreign import ccall unsafe "hs_cardanoprelude_closureSize"
   closureSize_ :: CUInt -> CUInt -> CUInt -> Ptr CUInt -> StablePtr a -> IO CULong
 
 -- | Should we perform a GC call before counting the size?
+type PerformGC :: Type
 data PerformGC =
     -- | Yes, first perform GC before counting
     --
