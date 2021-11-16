@@ -39,7 +39,7 @@ import Hedgehog.Internal.Show (valueDiff)
 import Hedgehog.Internal.TH (TExpQ)
 
 import Language.Haskell.TH (Exp(..), Q, location, runIO)
-import Language.Haskell.TH.Syntax (Loc(..), mkName, unTypeQ, unsafeTExpCoerce)
+import Language.Haskell.TH.Syntax (Loc(..), mkName, unTypeQ, unsafeTExpCoerce, liftCode, Code, examineCode)
 
 discoverRoundTrip :: TExpQ Group
 discoverRoundTrip = discoverPrefix "roundTrip"
@@ -57,7 +57,7 @@ discoverPropArg = discoverPrefixThreadArg "ts_prop_"
 -- the sub-properties, so that they are fully applied `Property`'s and can
 -- be wrapped into a Hedgehog `Group`.
 discoverPrefixThreadArg :: forall a . String -> TExpQ (a -> Group)
-discoverPrefixThreadArg prefix = do
+discoverPrefixThreadArg prefix = liftCode $ do
   file       <- getCurrentFile
   properties <- Map.toList <$> runIO (readProperties prefix file)
 
@@ -67,7 +67,7 @@ discoverPrefixThreadArg prefix = do
 
     names     = fmap (mkNamedProperty . fst) $ sortBy startLine properties
 
-  [|| \arg -> Group $$(testModuleName) (map ($ arg) $$(listTE names)) ||]
+  examineCode [|| \arg -> Group $$(testModuleName) (map ($ arg) $$(listTE names)) ||]
  where
 
   mkNamedProperty :: PropertyName -> TExpQ (a -> (PropertyName, Property))
@@ -75,20 +75,19 @@ discoverPrefixThreadArg prefix = do
     [|| \arg -> (name, $$(unsafeProperty name) arg) ||]
 
   unsafeProperty :: PropertyName -> TExpQ (a -> Property)
-  unsafeProperty pn = do
+  unsafeProperty pn = liftCode $ do
     let
-      prop :: TExpQ (a -> Property)
-      prop = unsafeTExpCoerce . pure . VarE . mkName $ unPropertyName pn
-    [|| $$prop ||]
+      prop = liftCode . unsafeTExpCoerce . pure . VarE . mkName $ unPropertyName pn
+    examineCode [|| $$prop ||]
 
   listTE :: [TExpQ b] -> TExpQ [b]
-  listTE xs = do
-    unsafeTExpCoerce . pure . ListE =<< traverse unTypeQ xs
+  listTE xs = liftCode $ do
+    unsafeTExpCoerce . pure . ListE =<< traverse (unTypeQ . examineCode) xs
 
   testModuleName :: TExpQ GroupName
-  testModuleName = do
+  testModuleName = liftCode $ do
     loc <- GroupName . loc_module <$> location
-    [|| loc ||]
+    examineCode [|| loc ||]
 
   getCurrentFile :: Q FilePath
   getCurrentFile = loc_filename <$> location
