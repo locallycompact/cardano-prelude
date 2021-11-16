@@ -39,6 +39,7 @@ putTextLn :: Text -> IO ()
 putTextLn = putStrLn
 
 -- Length which includes @Text@ as well as @Foldable@.
+type HasLength :: * -> Constraint
 class HasLength a where
     length' :: a -> Int
 
