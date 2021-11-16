@@ -37,6 +37,7 @@ cVISITED_FULL        = 2
 cOUT_OF_MEMORY       = 3
 cUNSUPPORTED_CLOSURE = 4
 
+type CountFailure :: Type
 data CountFailure =
     WorkListFull
   | VisitedFull
