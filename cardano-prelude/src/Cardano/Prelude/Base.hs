@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE Safe #-}
@@ -28,7 +29,9 @@ import qualified Data.Text as T
 
 import Control.Category (id)
 import Control.Category as X hiding (id)
+#if !MIN_VERSION_base(4,16,0)
 import Data.Kind (Type)
+#endif
 import Numeric.Natural as X
 
 -- | Rename `id` to `identity` to allow `id` as a variable name
