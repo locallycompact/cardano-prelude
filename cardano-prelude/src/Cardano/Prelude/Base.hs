@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE Safe #-}
 
 module Cardano.Prelude.Base
