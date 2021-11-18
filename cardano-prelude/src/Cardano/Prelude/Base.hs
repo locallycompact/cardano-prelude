@@ -8,7 +8,7 @@ module Cardano.Prelude.Base
   , identity
   , putTextLn
   , length
-  , module C
+  , C.toS
   )
 where
 
