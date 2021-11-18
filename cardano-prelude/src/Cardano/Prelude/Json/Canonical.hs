@@ -113,7 +113,7 @@ instance ReportSchemaErrors m => FromJSON m Integer where
   fromJSON = parseJSString (readEither . toS)
 
 instance MonadError SchemaError m => FromJSON m Natural where
-  fromJSON = parseJSString (readEither . toS)
+  fromJSON = parseJSString (\x -> readEither . toS $ x)
 
 instance MonadError SchemaError m => FromJSON m UTCTime where
   fromJSON = fmap (posixSecondsToUTCTime . fromIntegral) . fromJSON @_ @Int54
