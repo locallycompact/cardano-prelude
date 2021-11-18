@@ -67,6 +67,3 @@ library
                       -fno-warn-safe
                       -fno-warn-unsafe
   cc-options:         -Wall
-
-  if (!flag(development))
-    ghc-options:      -Werror
