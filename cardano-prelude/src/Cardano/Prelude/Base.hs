@@ -8,12 +8,14 @@ module Cardano.Prelude.Base
   , identity
   , putTextLn
   , length
+  , module C
   )
 where
 
 import Protolude as X
   hiding ( Hashable
   , Map
+  , toS
   , hash
   , hashUsing
   , hashWithSalt
@@ -23,6 +25,7 @@ import Protolude as X
   , (.)
   )
 import qualified Protolude as Y
+import qualified Protolude.Conv as C
 
 import Data.Map.Strict as X (Map)
 import qualified Data.Text as T
